@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 
-form_class = uic.loadUiType("calculator.ui")[0]
+form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/calculator.ui")[0]
 
 class Calculator(QDialog, form_class):
     def __init__(self):
@@ -83,6 +83,13 @@ class Calculator(QDialog, form_class):
             else :
                 return
 
+        # 괄호 뒤 음수 처리: ( -3 ) → "-3"
+        if self.tokens and self.tokens[-1] == "(" and op == "-":
+            self.current_input = "-"
+            self.just_calculated = False
+            self.update_display()
+            return
+
         if self.tokens and self.tokens[-1] in "+-*/":
             self.tokens[-1] = op
         else:
@@ -122,8 +129,9 @@ class Calculator(QDialog, form_class):
     def press_equal(self):
         if self.current_input:
             self.tokens.append(self.current_input)
-        merged_tokens = self.merge_negative_numbers(self.tokens)
-        postfix = self.to_postfix(merged_tokens)
+        #merged_tokens = self.merge_negative_numbers(self.tokens)
+        #postfix = self.to_postfix(merged_tokens)
+        postfix = self.to_postfix(self.tokens)
         try:
             if postfix == "Error":
                 raise Exception
@@ -263,19 +271,19 @@ class Calculator(QDialog, form_class):
         
     # ----------------------------------------------------------------------
 
-    def merge_negative_numbers(self, tokens):
-        result = []
-        i = 0
-        while i < len(tokens):
-            if (tokens[i] == "-" and
-                i > 0 and tokens[i - 1] == "(" and
-                i + 1 < len(tokens) and self.is_number(tokens[i + 1])):
-                result.append("-" + tokens[i + 1])
-                i += 2
-            else:
-                result.append(tokens[i])
-                i += 1
-        return result
+    # def merge_negative_numbers(self, tokens):
+    #     result = []
+    #     i = 0
+    #     while i < len(tokens):
+    #         if (tokens[i] == "-" and
+    #             i > 0 and tokens[i - 1] == "(" and
+    #             i + 1 < len(tokens) and self.is_number(tokens[i + 1])):
+    #             result.append("-" + tokens[i + 1])
+    #             i += 2
+    #         else:
+    #             result.append(tokens[i])
+    #             i += 1
+    #     return result
     
     # ----------------------------------------------------------------------
 
