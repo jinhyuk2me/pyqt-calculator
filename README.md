@@ -1,4 +1,4 @@
-![banner](https://github.com/jinhyuk2me/qt-calculator/blob/main/img/banner.png?raw=true)
+<img src="https://github.com/jinhyuk2me/qt-calculator/blob/main/img/banner.png?raw=true" width="100%" />
 
 # 🧮 PyQt6 괄호 포함 계산기
 
