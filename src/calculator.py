@@ -10,6 +10,7 @@ class Calculator(QDialog, form_class):
         self.setupUi(self)
 
         self.tokens = []
+        self.prev_expression = []
         self.current_input = ""
         self.just_calculated = True
         self.just_errored = False
@@ -93,8 +94,11 @@ class Calculator(QDialog, form_class):
                 self.just_calculated = False
                 self.update_display()
                 return
-            # 다른 연산자의 경우 무시
+            # 다른 연산자의 경우 0을 대상으로 연산
             else :
+                self.tokens = ["0", op]
+                self.current_input = ""
+                self.update_display()
                 return
 
         # '('로 끝나는 self.tokens가 존재하고 입력된 연산자가 '-'일 때
@@ -158,10 +162,13 @@ class Calculator(QDialog, form_class):
     # ----------------------------------------------------------
 
     def press_equal(self):
-        # 하단 입력창에 값이 존재할 경우 먼저 self.tokens에 append
         if self.current_input:
             self.tokens.append(self.current_input)
-        # self.tokens를 postfix로 변환
+        elif not self.tokens:
+            return
+
+        self.prev_expression = self.tokens.copy()  # 💡 수식 저장
+
         postfix = self.to_postfix(self.tokens)
         try:
             if postfix == "Error": raise Exception
@@ -174,6 +181,7 @@ class Calculator(QDialog, form_class):
             self.tokens = []
         self.just_calculated = True
         self.update_display()
+
 
     # ----------------------------------------------------------
 
@@ -189,9 +197,11 @@ class Calculator(QDialog, form_class):
         self.update_display()
 
     def toggle_sign(self):
-        if self.current_input.startswith("-"):
+        if self.current_input.startswith("-"): 
             self.current_input = self.current_input[1:]
-        elif self.current_input:
+        elif self.current_input == "0": 
+            return
+        elif self.current_input: 
             self.current_input = "-" + self.current_input
         self.update_display()
 
@@ -204,7 +214,8 @@ class Calculator(QDialog, form_class):
     # 하단 lineEdit
     def update_lineEdit(self):
         if self.current_input == "":
-            if self.tokens == [] and not self.just_calculated:
+            #if self.tokens == [] and not self.just_calculated:
+            if self.tokens == []:
                 self.lineEdit.setText("0")
             else:
                 self.lineEdit.setText("")
@@ -223,7 +234,11 @@ class Calculator(QDialog, form_class):
     # 상단 lineEdit
     def update_lineEdit_2(self):
         pretty_tokens = []
-        for token in self.tokens:
+
+        # 계산이 방금 끝난 경우, prev_expression을 보여줌
+        tokens_to_display = self.prev_expression if self.just_calculated and self.prev_expression else self.tokens
+
+        for token in tokens_to_display:
             if self.is_number(token):
                 val = float(token)
                 if val.is_integer():
