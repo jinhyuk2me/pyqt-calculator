@@ -110,10 +110,18 @@ class Calculator(QDialog, form_class):
             self.current_input = ""
             self.just_calculated = False
 
+        
         if self.current_input:
-            self.tokens.append(self.current_input)
-            self.current_input = ""
+            # 초기 상태에서 [-] 입력 후 곧바로 [(] 입력시 [-1*(]로 자동 변환
+            if self.current_input == "-" and not self.tokens:
+                self.tokens.append("-1")
+                self.tokens.append("*")
+                self.current_input = ""
+            else:
+                self.tokens.append(self.current_input)
+                self.current_input = ""
 
+        # 괄호의 수를 자동으로 검사하여 '('와 ')'를 선택한다.
         if left <= right:
             if self.tokens and (self.is_number(self.tokens[-1]) or self.tokens[-1] == ")"):
                 self.tokens.append("*")
