@@ -1,3 +1,5 @@
+![banner](https://github.com/jinhyuk2me/qt-calculator/blob/main/img/banner.png?raw=true)
+
 # 🧮 PyQt6 괄호 포함 계산기
 
 **괄호 연산, 연산자 우선순위, robust한 입력 처리**를 지원하는 PyQt6 기반 GUI 계산기입니다.  
