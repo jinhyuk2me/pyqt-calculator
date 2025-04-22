@@ -36,6 +36,7 @@ class Calculator(QDialog, form_class):
     def input_digit(self, digit):
         self.clear_error()
 
+        # 계산되어 출력된 값이 있을 경우
         if self.just_calculated:
             self.tokens = []
             if digit == ".":
@@ -46,13 +47,17 @@ class Calculator(QDialog, form_class):
             self.update_display()
             return
 
+        # 초기상태에서 digit을 입력할 경우
         if self.current_input == "0" and digit != ".":
             self.current_input = digit
         else:
+            # point가 2개 이상 입력되는 것을 방지
             if digit == "." and "." in self.current_input:
                 return
+            # 초기상태에서 point를 입력할 경우
             if digit == "." and self.current_input == "":
                 self.current_input = "0"
+            # 입력값이 입력창보다 커지는 것을 방지
             if len(self.current_input) >= 20:
                 return
             self.current_input += digit
@@ -60,37 +65,49 @@ class Calculator(QDialog, form_class):
         self.update_display()
 
     def input_operator(self, op):
+        # 입력된 값이 있을 경우
         if self.current_input:
+            # 입력된 값이 에러 메세지인 경우 별도 함수를 통해 처리
             if self.clear_error():
                 return
+            # 입력된 값이 '.'으로 끝났을 경우 0을 추가
             if self.current_input[-1] == ".":
                 self.current_input += "0"
+            # 입력된 값이 '-'로 끝날 경우
             elif self.current_input[-1] == "-":
-                if op in "-*/":
+                # 입력된 operator가 '-'이 아닌 경우 입력 무시
+                if op in "+*/":
                     return
+                # 입력된 operator가 '-'일 경우 다시 초기상태로 복귀
                 else:
                     self.current_input = ""
                     self.update_display()
                     return
             self.tokens.append(self.current_input)
             self.current_input = ""
+        # 입력된 값이 없고 self.tokens가 비어있을 경우
         elif not self.tokens :
+            # '-'를 operator가 아니라 sign으로 처리
             if op == "-":
                 self.current_input = "-"
                 self.just_calculated = False
                 self.update_display()
                 return
+            # 다른 연산자의 경우 무시
             else :
                 return
 
+        # '('로 끝나는 self.tokens가 존재하고 입력된 연산자가 '-'일 때
+        # 입력된 연산자는 operator가 아니라 sign으로 처리
         if self.tokens and self.tokens[-1] == "(" and op == "-":
             self.current_input = "-"
             self.just_calculated = False
             self.update_display()
             return
 
+        # [+-*/]로 끝나는 self.tokens가 존재할 때
         if self.tokens and self.tokens[-1] in "+-*/":
-            self.tokens[-1] = op
+            self.tokens[-1] = op # operator를 교체
         else:
             self.tokens.append(op)
 
@@ -98,19 +115,26 @@ class Calculator(QDialog, form_class):
         self.update_display()
 
     def input_paren(self):
+
+        # 에러 출력시 바로 누를 것을 고려하여 별도 함수를 통해서 error 비우기
         self.clear_error()
+
+        # 현재 존재하는 괄호 수
         left = self.tokens.count("(")
         right = self.tokens.count(")")
 
+        #  출력된 값이 존재하는 상황
         if self.just_calculated:
+            # 출력된 값에 괄호를 곱하는 것으로 처리
             if self.current_input:
                 self.tokens = [self.current_input, "*"]
-            else:
+            # 없어도 무방한 방어적 else
+            else: 
                 self.tokens = []
             self.current_input = ""
             self.just_calculated = False
 
-        
+        # 출력값이 아닌 입력된 값이 존재하는 상황
         if self.current_input:
             # 초기 상태에서 [-] 입력 후 곧바로 [(] 입력시 [-1*(]로 자동 변환
             if self.current_input == "-" and not self.tokens:
@@ -134,12 +158,13 @@ class Calculator(QDialog, form_class):
     # ----------------------------------------------------------
 
     def press_equal(self):
+        # 하단 입력창에 값이 존재할 경우 먼저 self.tokens에 append
         if self.current_input:
             self.tokens.append(self.current_input)
+        # self.tokens를 postfix로 변환
         postfix = self.to_postfix(self.tokens)
         try:
-            if postfix == "Error":
-                raise Exception
+            if postfix == "Error": raise Exception
             result = self.evaluate_postfix(postfix)
             self.current_input = result
             self.tokens = []
@@ -176,6 +201,7 @@ class Calculator(QDialog, form_class):
         self.update_lineEdit_2()
         self.update_lineEdit()
 
+    # 하단 lineEdit
     def update_lineEdit(self):
         if self.current_input == "":
             if self.tokens == [] and not self.just_calculated:
@@ -194,6 +220,7 @@ class Calculator(QDialog, form_class):
             else:
                 self.lineEdit.setText(self.current_input)
 
+    # 상단 lineEdit
     def update_lineEdit_2(self):
         pretty_tokens = []
         for token in self.tokens:
@@ -209,6 +236,7 @@ class Calculator(QDialog, form_class):
 
     # ----------------------------------------------------------
 
+    # evaluate_postfix()를 위한 전처리 단계
     def to_postfix(self, tokens):
         prec = {'+': 2, '-': 2, '*': 3, '/': 3}
         output = []
