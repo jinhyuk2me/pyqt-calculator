@@ -66,27 +66,3 @@
 ### update_display
 ![update_lineEdit](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/update_lineEdit.png?raw=true)
 ![update_lineEdit_2](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/update_lineEdit_2.png?raw=true)
-
----
-
-## 👤 기여자
-
-<table>
-  <thead>
-    <tr>
-      <th>이름</th>
-      <th>GitHub</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>장진혁</strong></td>
-      <td>
-        <a href="https://github.com/jinhyuk2me">
-          <img src="https://img.shields.io/badge/github-jinhyuk2me-181717?style=flat-square&logo=github&logoColor=white">
-        </a>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
