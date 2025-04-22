@@ -4,7 +4,7 @@
 
 > **📅 프로젝트 기간: 2025.04.22 ~ 2025.04.23**
 
-**괄호 연산, 연산자 우선순위, 입력 처리**를 지원하는 PyQt6 기반 GUI 계산기입니다.  
+**괄호 연산, 연산자 우선순위, 대부분의 입력 처리**를 지원하는 PyQt6 기반 GUI 계산기입니다.  
 후위 표기법 변환 및 스택 기반 계산을 통해 정확한 수식 계산을 수행합니다.
 
 ![initial](https://github.com/jinhyuk2me/qt-calculator/blob/main/img/initial.png?raw=true)
