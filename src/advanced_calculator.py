@@ -2,7 +2,7 @@ import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
 
-form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/calculator.ui")[0]
+form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/advanced_calculator.ui")[0]
 
 class Calculator(QDialog, form_class):
     def __init__(self):
@@ -23,7 +23,8 @@ class Calculator(QDialog, form_class):
         self.pushButton_sub.clicked.connect(lambda: self.input_operator("-"))
         self.pushButton_mul.clicked.connect(lambda: self.input_operator("*"))
         self.pushButton_div.clicked.connect(lambda: self.input_operator("/"))
-        self.pushButton_paren.clicked.connect(self.input_paren)
+        self.pushButton_lparen.clicked.connect(self.input_lparen)
+        self.pushButton_rparen.clicked.connect(self.input_rparen)
 
         self.pushButton_equal.clicked.connect(self.press_equal)
         self.pushButton_AC.clicked.connect(self.press_ac)
@@ -84,6 +85,9 @@ class Calculator(QDialog, form_class):
                     self.current_input = ""
                     self.update_display()
                     return
+            # 입력된 값이 숫자이고 마지막 token이 ')'일 경우
+            elif (self.is_number(self.current_input) and len(self.tokens) > 0 and self.tokens[-1] == ")") :
+                self.tokens.append("*")
             self.tokens.append(self.current_input)
             self.current_input = ""
         # 입력된 값이 없고 self.tokens가 비어있을 경우
@@ -118,21 +122,18 @@ class Calculator(QDialog, form_class):
         self.just_calculated = False
         self.update_display()
 
-    def input_paren(self):
+    # -------------------------------------------------------------------
 
-        # 에러 출력시 바로 누를 것을 고려하여 별도 함수를 통해서 error 비우기
+    def input_lparen(self):
+
+        # 에러 상태일 경우 초기화
         self.clear_error()
-
-        # 현재 존재하는 괄호 수
-        left = self.tokens.count("(")
-        right = self.tokens.count(")")
 
         #  출력된 값이 존재하는 상황
         if self.just_calculated:
             # 출력된 값에 괄호를 곱하는 것으로 처리
             if self.current_input:
                 self.tokens = [self.current_input, "*"]
-            # 없어도 무방한 방어적 else
             else: 
                 self.tokens = []
             self.current_input = ""
@@ -140,7 +141,7 @@ class Calculator(QDialog, form_class):
 
         # 출력값이 아닌 입력된 값이 존재하는 상황
         if self.current_input:
-            # 초기 상태에서 [-] 입력 후 곧바로 [(] 입력시 [-1*(]로 자동 변환
+            # '-'만 입력된 상태에서 '(' 입력하면 -1*(로 변환
             if self.current_input == "-" and not self.tokens:
                 self.tokens.append("-1")
                 self.tokens.append("*")
@@ -148,37 +149,91 @@ class Calculator(QDialog, form_class):
             else:
                 self.tokens.append(self.current_input)
                 self.current_input = ""
+        
+        # 숫자나 ')' 다음에 '('가 올 경우 곱셈 생략을 막기 위해 '*' 자동 삽입
+        if self.tokens and (self.is_number(self.tokens[-1]) or self.tokens[-1] == ")"):
+            self.tokens.append("*")
 
-        # 괄호의 수를 자동으로 검사하여 '('와 ')'를 선택한다.
-        if left <= right:
-            if self.tokens and (self.is_number(self.tokens[-1]) or self.tokens[-1] == ")"):
-                self.tokens.append("*")
-            self.tokens.append("(")
-        else:
+        # lparen 추가
+        self.tokens.append("(")
+
+        # 화면 갱신
+        self.update_display()
+        
+    
+    def input_rparen(self):
+
+        # 에러 상태 초기화
+        if self.clear_error():
+            self.tokens = []
+            self.current_input = ""
+            self.prev_expression = []
+            self.just_calculated = False
+            self.update_display()
+            return
+        
+        # 계산 직후에는 괄호 닫기 무시
+        if self.just_calculated:
+            return
+        
+        # lparen이 더 많을 경우메나 괄호 허용
+        left = self.tokens.count("(")
+        right = self.tokens.count(")")
+        if left > right:
+            if self.current_input:
+                # 입력된 숫자가 있을 경우 먼저 token으로 넘김
+                if self.is_number(self.current_input):
+                    self.tokens.append(self.current_input)
+                self.current_input = ""
+            # 마지막 token이 '(' 일 경우 빈괄호 방지하기 위해 무시
+            if self.tokens[-1] == "(":
+                return
+            # 마지막 token이 연산자일 경우 연산자 제거
+            if self.tokens[-1] in "+-*/":
+                self.tokens.pop()
+            # rparen 추가
             self.tokens.append(")")
 
         self.update_display()
 
+
     # ----------------------------------------------------------
 
     def press_equal(self):
+        # 현재 입력된 값이 있는 경우 tokens에 포함시켜 계산
         if self.current_input:
+            # 현재 입력된 값이 숫자이고 마지막 token이 rparen일 경우
+            if (self.is_number(self.current_input) and len(self.tokens) > 0 and self.tokens[-1] == ")"):
+                self.tokens.append("*")
             self.tokens.append(self.current_input)
+        # 현재 입력된 값이 없고 tokens에 저장된 token도 없을 경우
         elif not self.tokens:
             return
 
+        # prev_expression에 임시 저장
         self.prev_expression = self.tokens.copy()
 
+        # tokens를 후위 표기법으로 변환
         postfix = self.to_postfix(self.tokens)
+
         try:
-            if postfix == "Error": raise Exception
+            # 변환 에러일 경우 직접 예외 발생시켜 처리
+            if postfix == "Error": 
+                raise Exception
+            
+            # 후위 표기 수식 평가
             result = self.evaluate_postfix(postfix)
+
+            # 결과 저장 및 상태 갱신
             self.current_input = result
             self.tokens = []
+            self.just_errored = True
         except:
+            # 예외 발생 시 에러 처리
             self.current_input = "Error"
             self.just_errored = True
             self.tokens = []
+        # 계산 완료 플래그 설정 및 디스플레이 갱신
         self.just_calculated = True
         self.update_display()
 
@@ -194,7 +249,10 @@ class Calculator(QDialog, form_class):
 
 
     def press_c(self):
-        self.current_input = ""
+        if self.current_input:
+            self.current_input = ""
+        elif self.tokens:
+            self.tokens.pop()
         self.just_calculated = False
         self.update_display()
 
