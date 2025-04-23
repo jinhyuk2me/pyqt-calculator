@@ -59,6 +59,9 @@ class Calculator(QDialog, form_class):
             # 초기상태에서 point를 입력할 경우
             if digit == "." and self.current_input == "":
                 self.current_input = "0"
+            # '-'가 입력된 상태에서 point를 입력할 경우
+            if digit == "." and self.current_input == "-":
+                self.current_input = "-0"
             # 입력값이 입력창보다 커지는 것을 방지
             if len(self.current_input) >= 20:
                 return
