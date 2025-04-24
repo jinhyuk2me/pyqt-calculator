@@ -71,17 +71,22 @@ class CalculatorController:
         self._update_display()
 
     def handle_c(self):
-        if self.model.state == CalcState.ERROR:
+        if self.model.state in (CalcState.ERROR, CalcState.CALCULATED):
             self.model.reset()
-        elif self.model.state == CalcState.CALCULATED:
-            self.model.reset()
-        elif self.model.current_input:
+
+        if self.model.current_input:
             self.model.current_input = ""
         elif self.model.tokens:
-            popped = self.model.tokens.pop()
-            if self.model.is_float(popped):
-                self.model.current_input = popped
+            self.model.tokens.pop()
+            if self.model.tokens and self.model.is_float(self.model.tokens[-1]):
+                popped = self.model.tokens.pop()
+                val = float(popped)
+                if val == int(val):
+                    self.model.current_input = str(int(val))
+                else:
+                    self.model.current_input = popped
         self._update_display()
+
 
     def handle_sign(self):
         self.model.toggle_sign()
