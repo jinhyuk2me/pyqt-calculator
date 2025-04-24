@@ -4,7 +4,7 @@ from PyQt6 import uic
 from PyQt6.QtCore import QTimer
 
 
-form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/advanced_calculator.ui")[0]
+form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/calculator.ui")[0]
 
 class Calculator(QDialog, form_class):
     def __init__(self):
@@ -175,12 +175,10 @@ class Calculator(QDialog, form_class):
     # -------------------------------------------------------------------
 
     def input_lparen(self):
+        
+        self.clear_error()
         if self.current_input == "Error":
             self.current_input = ""
-
-        # 에러 상태일 경우 초기화
-        if(self.clear_error()):
-            return
 
         #  출력된 값이 존재하는 상황
         if self.just_calculated:
