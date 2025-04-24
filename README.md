@@ -94,7 +94,7 @@ ERROR ←────────────
 ## 🖼 UI 스크린샷
 
 ### ✅ 초기 화면
-<img src="https://github.com/jinhyuk2me/qt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
+<img src="https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
 
 ---
 
