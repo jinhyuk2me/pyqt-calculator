@@ -1,8 +1,10 @@
 import sys
 from PyQt6.QtWidgets import *
 from PyQt6 import uic
+from PyQt6.QtCore import QTimer
 
-form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/calculator.ui")[0]
+
+form_class = uic.loadUiType("/home/jinhyuk2me/project/iot/qt_calculator/src/advanced_calculator.ui")[0]
 
 class Calculator(QDialog, form_class):
     def __init__(self):
@@ -15,6 +17,9 @@ class Calculator(QDialog, form_class):
         self.just_calculated = True
         self.just_errored = False
 
+        self.textBrowser.setFixedWidth(310)
+        self.textBrowser.setFixedHeight(40)
+
         for i in range(10):
             getattr(self, f"pushButton_{i}").clicked.connect(lambda _, x=str(i): self.input_digit(x))
         self.pushButton_point.clicked.connect(lambda: self.input_digit("."))
@@ -23,7 +28,8 @@ class Calculator(QDialog, form_class):
         self.pushButton_sub.clicked.connect(lambda: self.input_operator("-"))
         self.pushButton_mul.clicked.connect(lambda: self.input_operator("*"))
         self.pushButton_div.clicked.connect(lambda: self.input_operator("/"))
-        self.pushButton_paren.clicked.connect(self.input_paren)
+        self.pushButton_lparen.clicked.connect(self.input_lparen)
+        self.pushButton_rparen.clicked.connect(self.input_rparen)
 
         self.pushButton_equal.clicked.connect(self.press_equal)
         self.pushButton_AC.clicked.connect(self.press_ac)
@@ -35,9 +41,14 @@ class Calculator(QDialog, form_class):
     # ----------------------------------------------------------
 
     def input_digit(self, digit):
+
+        if self.current_input == "Error":
+            self.current_input = ""
         self.clear_error()
 
-        # 계산되어 출력된 값이 있을 경우
+        if self.tokens and self.tokens[-1] == ")":
+            self.tokens.append("*")
+
         if self.just_calculated:
             self.tokens = []
             if digit == ".":
@@ -45,94 +56,137 @@ class Calculator(QDialog, form_class):
             else:
                 self.current_input = digit
             self.just_calculated = False
+            self.clear_message()
+            self.update_display()
+            return
+        
+        if len(self.current_input) >= 20:
+            self.show_message("20자리까지만 입력할 수 있습니다.")
+            return
+
+        if digit != ".":
+            if (len(self.tokens) > 0 and self.is_float(self.tokens[-1])):
+                self.show_message("숫자 뒤에는 연산자를 입력해야 합니다.")
+                return
+            if (self.current_input == "0"):
+                self.current_input = ""
+            
+        elif digit == ".":
+            if "." in self.current_input:
+                self.show_message("소수점은 한 번만 입력할 수 있습니다.")
+                return
+            elif self.current_input == "":
+                self.current_input = "0"
+            elif self.current_input == "-":
+                self.current_input = "-0"
+
+        self.clear_message()
+        self.current_input += digit
+        self.update_display()
+
+
+    # -------------------------------------------------------------------
+
+    def input_operator(self, op):
+        if self.current_input == "Error":
+            self.prev_expression = []
+            self.current_input = ""
+            self.tokens = []
             self.update_display()
             return
 
-        # 초기상태에서 digit을 입력할 경우
-        if self.current_input == "0" and digit != ".":
-            self.current_input = digit
-        else:
-            # point가 2개 이상 입력되는 것을 방지
-            if digit == "." and "." in self.current_input:
-                return
-            # 초기상태에서 point를 입력할 경우
-            if digit == "." and self.current_input == "":
-                self.current_input = "0"
-            # 입력값이 입력창보다 커지는 것을 방지
-            if len(self.current_input) >= 20:
-                return
-            self.current_input += digit
+        if self.just_calculated:
+            self.tokens = [self.current_input, op]
+            self.prev_expression = []
+            self.current_input = ""
+            self.just_calculated = False
+            self.clear_message()
+            self.update_display()
+            return
 
-        self.update_display()
-
-    def input_operator(self, op):
-        # 입력된 값이 있을 경우
         if self.current_input:
-            # 입력된 값이 에러 메세지인 경우 별도 함수를 통해 처리
             if self.clear_error():
                 return
-            # 입력된 값이 '.'으로 끝났을 경우 0을 추가
             if self.current_input[-1] == ".":
                 self.current_input += "0"
-            # 입력된 값이 '-'로 끝날 경우
             elif self.current_input[-1] == "-":
-                # 입력된 operator가 '-'이 아닌 경우 입력 무시
                 if op in "+*/":
+                    self.show_message("음수 기호 뒤에는 연산자를 넣을 수 없습니다.")
                     return
-                # 입력된 operator가 '-'일 경우 다시 초기상태로 복귀
                 else:
                     self.current_input = ""
+                    self.clear_message()
                     self.update_display()
                     return
+            elif self.is_float(self.current_input):
+                print("hello4")
+                if (len(self.tokens) > 0):
+                    if(self.tokens[-1] == ")"):
+                         self.tokens.append("*")
             self.tokens.append(self.current_input)
             self.current_input = ""
-        # 입력된 값이 없고 self.tokens가 비어있을 경우
-        elif not self.tokens :
-            # '-'를 operator가 아니라 sign으로 처리
+
+        elif not self.tokens:
             if op == "-":
                 self.current_input = "-"
                 self.just_calculated = False
+                self.clear_message()
                 self.update_display()
                 return
-            # 다른 연산자의 경우 0을 대상으로 연산
-            else :
+            else:
                 self.tokens = ["0", op]
                 self.current_input = ""
+                self.clear_message()
                 self.update_display()
                 return
 
-        # '('로 끝나는 self.tokens가 존재하고 입력된 연산자가 '-'일 때
-        # 입력된 연산자는 operator가 아니라 sign으로 처리
-        if self.tokens and self.tokens[-1] == "(" and op == "-":
-            self.current_input = "-"
-            self.just_calculated = False
-            self.update_display()
-            return
+        elif self.tokens[-1] == "(":
+            if(op == "-"):
+                self.current_input = "-"
+                self.just_calculated = False
+                self.clear_message()
+                self.update_display()
+                return
+            else:
+                self.show_message("괄호 뒤에는 '-'만 입력 가능합니다.")
+                self.update_display()
+                return
 
-        # [+-*/]로 끝나는 self.tokens가 존재할 때
-        if self.tokens and self.tokens[-1] in "+-*/":
-            self.tokens[-1] = op # operator를 교체
+        if self.tokens:
+            print(f"self.tokens: {self.tokens}")
+            if self.tokens[-1] == "-":
+                if op == '-':
+                    self.current_input = "-"
+                else:
+                    self.tokens[-1] = op
+            elif self.tokens[-1] in "+*/":
+                self.tokens[-1] = op
+            else: 
+                self.tokens.append(op)  
         else:
+            print("Debug4444444444444444")
             self.tokens.append(op)
 
         self.just_calculated = False
+        self.clear_message()
         self.update_display()
 
-    def input_paren(self):
 
-        # 에러 출력시 바로 누를 것을 고려하여 별도 함수를 통해서 error 비우기
-        self.clear_error()
+    # -------------------------------------------------------------------
 
-        # 현재 존재하는 괄호 수
-        left = self.tokens.count("(")
-        right = self.tokens.count(")")
+    def input_lparen(self):
+        if self.current_input == "Error":
+            self.current_input = ""
+
+        # 에러 상태일 경우 초기화
+        if(self.clear_error()):
+            return
 
         #  출력된 값이 존재하는 상황
         if self.just_calculated:
             # 출력된 값에 괄호를 곱하는 것으로 처리
             if self.current_input:
                 self.tokens = [self.current_input, "*"]
-            # 없어도 무방한 방어적 else
             else: 
                 self.tokens = []
             self.current_input = ""
@@ -140,7 +194,7 @@ class Calculator(QDialog, form_class):
 
         # 출력값이 아닌 입력된 값이 존재하는 상황
         if self.current_input:
-            # 초기 상태에서 [-] 입력 후 곧바로 [(] 입력시 [-1*(]로 자동 변환
+            # '-'만 입력된 상태에서 '(' 입력하면 -1*(로 변환
             if self.current_input == "-" and not self.tokens:
                 self.tokens.append("-1")
                 self.tokens.append("*")
@@ -148,39 +202,112 @@ class Calculator(QDialog, form_class):
             else:
                 self.tokens.append(self.current_input)
                 self.current_input = ""
+        
+        # 숫자나 ')' 다음에 '('가 올 경우 곱셈 생략을 막기 위해 '*' 자동 삽입
+        if self.tokens and (self.is_float(self.tokens[-1]) or self.tokens[-1] == ")"):
+            self.tokens.append("*")
 
-        # 괄호의 수를 자동으로 검사하여 '('와 ')'를 선택한다.
-        if left <= right:
-            if self.tokens and (self.is_number(self.tokens[-1]) or self.tokens[-1] == ")"):
-                self.tokens.append("*")
-            self.tokens.append("(")
-        else:
-            self.tokens.append(")")
+        # lparen 추가
+        self.tokens.append("(")
 
+        # 화면 갱신
         self.update_display()
+        
+    
+    def input_rparen(self):
+        if self.clear_error() or self.just_calculated:
+            self.tokens = []
+            self.current_input = ""
+            self.prev_expression = []
+            self.just_calculated = False
+            self.clear_message()
+            self.update_display()
+            return
+
+        left = self.tokens.count("(")
+        right = self.tokens.count(")")
+        if left > right:
+            if self.current_input:
+                if self.is_float(self.current_input):
+                    self.tokens.append(self.current_input)
+                self.current_input = ""
+            if self.tokens[-1] == "(":
+                self.tokens.pop()
+                self.show_message("빈 괄호가 자동 삭제되었습니다.")
+                self.update_display()
+                return
+            if self.tokens[-1] in "+-*/":
+                self.tokens.pop()
+            self.tokens.append(")")
+        else:
+            self.show_message("닫는 괄호가 더 많을 수는 없습니다.")
+            self.update_display()
+            return
+
+        self.clear_message()
+        self.update_display()
+
+
 
     # ----------------------------------------------------------
 
     def press_equal(self):
-        if self.current_input:
-            self.tokens.append(self.current_input)
-        elif not self.tokens:
+        if self.clear_error():
             return
+
+        if self.current_input:
+            if (self.is_float(self.current_input) and len(self.tokens) > 0 and self.tokens[-1] == ")"):
+                self.tokens.append("*")
+            self.tokens.append(self.current_input)
+        elif self.tokens:
+            if (self.tokens[-1] in "+-*/"):
+                self.tokens = self.tokens[:-1]
+                self.show_message("피연산자 부족으로 마지막 연산자가 자동으로 삭제됩니다.")
+        elif not self.tokens:
+            self.show_message("계산할 수식이 없습니다.")
+            return
+
+        while (self.tokens.count("(") > self.tokens.count(")")) :
+            self.show_message("닫는 괄호 부족으로 자동으로 채워집니다.")
+            if (self.tokens[-1] in "+-*/"):
+                self.tokens = self.tokens[:-1]
+            self.tokens.append(")")
+            if (self.tokens[-2] == '(' and self.tokens[-1] == ')'):
+                self.tokens = self.tokens[:-2]
+            elif (self.tokens[-2] in "+-*/" and self.tokens[-1] == ')'):
+                self.tokens = self.tokens[:-2] + [self.tokens[-1]]
+                print("3333333333333333")
+        if len(self.tokens) > 0 and self.tokens[-1] in "+-*/":
+            self.tokens.pop()
 
         self.prev_expression = self.tokens.copy()
 
         postfix = self.to_postfix(self.tokens)
+
+        print(f"prev_expression: {self.prev_expression}")
+        print(f"postfix: {postfix}")
+
+        if not postfix:
+            self.press_ac()
+            self.show_message("완전하지 않은 수식입니다.")
+            return
+
         try:
-            if postfix == "Error": raise Exception
+            if postfix == "Error":
+                raise Exception
             result = self.evaluate_postfix(postfix)
             self.current_input = result
             self.tokens = []
+            self.just_errored = False
+            self.clear_message()
         except:
             self.current_input = "Error"
             self.just_errored = True
             self.tokens = []
+            self.show_message("수식에 오류가 있습니다.")
         self.just_calculated = True
         self.update_display()
+
 
 
     # ----------------------------------------------------------
@@ -190,15 +317,33 @@ class Calculator(QDialog, form_class):
         self.current_input = ""
         self.prev_expression = []
         self.just_calculated = False
+        self.clear_message() 
         self.update_display()
 
 
     def press_c(self):
-        self.current_input = ""
+        if self.current_input:
+            self.current_input = ""
+        elif self.tokens:
+            self.tokens.pop()
+            if (len(self.tokens) > 0 and self.is_float(self.tokens[-1])):
+                pop_token = self.tokens.pop()
+                val = float(pop_token)
+                if val == int(val):
+                    self.current_input = str(int(val))
+                else:
+                    self.current_input = pop_token
+
+
+
         self.just_calculated = False
+        self.clear_message() 
         self.update_display()
 
     def toggle_sign(self):
+        if self.clear_error():
+            return
+        self.clear_message()
         if self.current_input.startswith("-"): 
             self.current_input = self.current_input[1:]
         elif self.current_input == "0": 
@@ -216,7 +361,6 @@ class Calculator(QDialog, form_class):
     # 하단 lineEdit
     def update_lineEdit(self):
         if self.current_input == "":
-            #if self.tokens == [] and not self.just_calculated:
             if self.tokens == []:
                 self.lineEdit.setText("0")
             else:
@@ -224,7 +368,7 @@ class Calculator(QDialog, form_class):
         else:
             if self.current_input.endswith("."):
                 self.lineEdit.setText(self.current_input)
-            elif self.is_number(self.current_input):
+            elif self.is_float(self.current_input):
                 val = float(self.current_input)
                 if val.is_integer() and self.just_calculated:
                     self.lineEdit.setText(str(int(val)))
@@ -241,7 +385,7 @@ class Calculator(QDialog, form_class):
         tokens_to_display = self.prev_expression if self.just_calculated and self.prev_expression else self.tokens
 
         for token in tokens_to_display:
-            if self.is_number(token):
+            if self.is_float(token):
                 val = float(token)
                 if val.is_integer():
                     pretty_tokens.append(str(int(val)))
@@ -308,6 +452,7 @@ class Calculator(QDialog, form_class):
                         stack.append(a * b)
                     elif token == "/":
                         if b == 0:
+                            self.show_message("0으로 나눌 수 없습니다.")
                             raise ZeroDivisionError
                         stack.append(a / b)
 
@@ -316,26 +461,35 @@ class Calculator(QDialog, form_class):
             else:
                 raise ValueError
         except:
+            self.show_message("수식에 오류가 있습니다.")
             self.just_errored = True
             return "Error"
     
     # ----------------------------------------------------------------------
 
-    def is_number(self, target):
+    def is_float(self, target):
         try:
             float(target)
             return True
         except:
             return False
+        
+    def is_int(self, target):
+        try:
+            int(target)
+            return True
+        except ValueError:
+            return False
 
     def is_zero(self, target):
-        return self.is_number(target) and float(target) == 0
+        return self.is_float(target) and float(target) == 0
     
     # ----------------------------------------------------------------------
 
     def clear_error(self):
         if self.just_errored:
             self.tokens = []
+            self.prev_expression = []
             self.current_input = ""
             self.just_errored = False
             self.update_display()
@@ -343,6 +497,21 @@ class Calculator(QDialog, form_class):
         return False
     
     # ----------------------------------------------------------------------
+
+    def show_message(self, msg):
+        QTimer.singleShot(50, lambda: self._delayed_show_message(msg))
+        QTimer.singleShot(2050, self.clear_message)
+
+    def _delayed_show_message(self, msg):
+        self.textBrowser.setText(msg)
+        self.textBrowser.setVisible(True)
+        self.textBrowser.adjustSize()
+
+
+    def clear_message(self):
+        self.textBrowser.setText("")
+
+    # --------------------------------------------------------------------
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
