@@ -35,11 +35,11 @@ class CalculatorView(QDialog):
         self.pushButton_sign.clicked.connect(controller.handle_sign)
 
     def update_result_display(self, value: str):
-        """아래 라인: 현재 입력값 or 계산 결과 표시"""
+        # 아래 라인: 현재 입력값 or 계산 결과 표시
         self.lineEdit.setText(value)
 
     def update_expression_display(self, tokens: list[str]):
-        """위 라인: 수식 구성 상태 표시"""
+        # 위 라인: 수식 구성 상태 표시
         pretty = []
         for token in tokens:
             try:
@@ -50,7 +50,7 @@ class CalculatorView(QDialog):
         self.lineEdit_2.setText(" ".join(pretty))
 
     def show_message(self, msg: str):
-        """사용자 메시지 (오류 등) 표시"""
+        # 사용자 메시지 (오류 등) 표시
         QTimer.singleShot(50, lambda: self._delayed_show_message(msg))
         QTimer.singleShot(2050, self.clear_message)
 

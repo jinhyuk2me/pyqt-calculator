@@ -245,7 +245,9 @@ class CalculatorModel:
                     self.current_input = "-"
                 else:
                     self.current_input = "-" + self.current_input
-                    
+            elif not self.current_input:
+                self.current_input = "-"
+
 
     def reset(self):
         self.tokens.clear()
