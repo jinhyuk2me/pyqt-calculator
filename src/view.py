@@ -6,7 +6,7 @@ from PyQt6 import uic
 class CalculatorView(QDialog):
     def __init__(self):
         super().__init__()
-        uic.loadUi("/home/jinhyuk2me/project/iot/qt_calculator/tmp_src/calculator.ui", self)
+        uic.loadUi("calculator.ui", self)
 
         # 메시지 영역 사이즈 고정
         self.textBrowser.setFixedWidth(310)

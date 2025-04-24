@@ -9,9 +9,7 @@ class CalculatorController:
         self.view.connect_signals(self)
         self._update_display()
 
-    # -------------------------
-    # 핸들러: 숫자 입력
-    # -------------------------
+
     def handle_digit(self, digit: str):
         result = self.model.input_digit(digit)
         if result == "TOO_LONG":
@@ -22,9 +20,7 @@ class CalculatorController:
             self.view.show_message("숫자 뒤에는 연산자를 입력해야 합니다.")
         self._update_display()
 
-    # -------------------------
-    # 핸들러: 연산자 입력
-    # -------------------------
+
     def handle_operator(self, op: str):
         result = self.model.input_operator(op)
         if result == "OPERATOR_AFTER_MINUS":
@@ -33,12 +29,11 @@ class CalculatorController:
             self.view.show_message("괄호 뒤에는 '-'만 입력 가능합니다.")
         self._update_display()
 
-    # -------------------------
-    # 핸들러: 괄호
-    # -------------------------
+
     def handle_lparen(self):
         self.model.input_lparen()
         self._update_display()
+
 
     def handle_rparen(self):
         result = self.model.input_rparen()
@@ -48,9 +43,7 @@ class CalculatorController:
             self.view.show_message("빈 괄호가 자동 삭제되었습니다.")
         self._update_display()
 
-    # -------------------------
-    # 핸들러: 계산 (=)
-    # -------------------------
+
     def handle_equal(self):
         result = self.model.evaluate()
         if result == "EMPTY":
@@ -63,12 +56,11 @@ class CalculatorController:
             self.view.clear_message()
         self._update_display()
 
-    # -------------------------
-    # 핸들러: AC / C / ±
-    # -------------------------
+
     def handle_ac(self):
         self.model.reset()
         self._update_display()
+
 
     def handle_c(self):
         if self.model.state in (CalcState.ERROR, CalcState.CALCULATED):
@@ -86,15 +78,13 @@ class CalculatorController:
                 else:
                     self.model.current_input = popped
         self._update_display()
-
+        
 
     def handle_sign(self):
         self.model.toggle_sign()
         self._update_display()
 
-    # -------------------------
-    # 디스플레이 업데이트
-    # -------------------------
+
     def _update_display(self):
         # lineEdit_2: 수식
         tokens = self.model.prev_expression if self.model.state == CalcState.CALCULATED else self.model.tokens
