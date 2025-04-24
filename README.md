@@ -1,102 +1,120 @@
+
 <img src="https://github.com/jinhyuk2me/qt-calculator/blob/main/img/banner.png?raw=true" width="100%" />
 
 # 🧮 PyQt6 계산기 프로젝트
 
-> **📅 프로젝트 기간: 2025.04.22 ~ 2025.04.23**
+> **📅 프로젝트 기간: 2025.04.22 ~ 2025.04.24**  
+> **🎯 구조: MVC 아키텍처 / 상태 기반 로직 적용 / 후위 표기법 기반 수식 계산**
 
-**괄호 연산, 연산자 우선순위, 대부분의 입력 처리**를 지원하는 PyQt6 기반 GUI 계산기입니다.  
-후위 표기법 변환 및 스택 기반 계산을 통해 정확한 수식 계산을 수행합니다.
-
-![initial](https://github.com/jinhyuk2me/qt-calculator/blob/main/img/initial.png?raw=true)
+괄호 연산, 음수 처리, 연산자 우선순위, 오류 메시지 출력 등 **실제 계산기 수준의 입력 처리**를 구현한 PyQt6 기반 GUI 계산기입니다.  
+Shunting Yard 알고리즘과 스택 계산을 사용하여 **정확한 수식 계산**을 보장하며, **MVC 아키텍처**를 통해 **유지보수성과 확장성**을 확보했습니다.
 
 ---
 
-## 📌 기능
+## 💡 주요 특징 요약
 
-### 1. 사칙연산 입력
-- `+`, `-`, `*`, `/` 연산자 입력 처리
-- 연산자 중복 입력 시 마지막 연산자로 덮어쓰기
-
-### 2. 연산자 우선순위 처리
-- 곱셈(`*`)과 나눗셈(`/`)을 덧셈(`+`), 뺄셈(`-`)보다 먼저 계산
-- 후위 표기법(postfix)을 통해 정확한 계산 순서 보장
-
-### 3. 숫자 및 소수 입력
-- `0-9` 숫자 버튼 입력 지원
-- `.` 버튼을 통한 소수점 입력 (중복 입력 방지)
-- `"0."`, `"0.008"` 등 유효한 소수 입력 허용
-
-### 4. 부호 전환 기능 (`±`)
-- 현재 입력값의 부호 전환 (`12` ↔ `-12`)
-
-### 5. 괄호 입력
-- 여는 괄호 `(`, 닫는 괄호 `)` 짝 맞춤 자동 처리
-- 숫자 뒤에 괄호가 올 경우 `*` 자동 삽입 (암시적 곱셈)
-- `(-3)` 형태의 음수 괄호 표현도 처리 가능
-- `-(2 + 3)` 형태의 음수 괄호 수식 자동 지원 (`-1 * (...)` 변환 처리)
-
-### 6. 후위 표기법 변환
-- Shunting Yard 알고리즘을 이용해 중위 표현식을 후위 표기식으로 변환
-- 괄호 및 연산자 우선순위 고려
-
-### 7. 후위 표기법 계산
-- 스택 기반 계산 방식 사용
-- `0`으로 나누는 경우 등 예외 발생 시 `"Error"` 반환
-- 결과가 정수인 경우 `.0` 제거하여 정리된 결과 출력
-
-### 8. 입력 초기화 기능
-- `AC` 버튼: 전체 입력값 초기화
-- `C` 버튼: 현재 입력 중인 값만 초기화
-
-### 9. 입력 오류 처리
-- 괄호 불일치, 잘못된 연산자 조합, `0` 나눗셈 등 오류 발생 시 `"Error"` 출력
-- `"Error"` 상태에서 새로운 입력 시 자동 초기화
-
-### 10. 이중 화면 표시
-- 상단 수식 라벨에 현재 수식 표시 (`lineEdit_2`)
-- 하단 입력창에 현재 입력 또는 계산 결과 표시 (`lineEdit`)
----
-
-## 🧠 내부 구현 요약
-
-| 기능 | 설명 |
+| 항목 | 설명 |
 |------|------|
-| `input_digit()` | 숫자 및 소수점 입력 처리 |
-| `input_operator()` | 연산자 입력 처리, 괄호 뒤 음수 대응 포함 |
-| `input_paren()` | 괄호 삽입 및 암시적 곱셈 자동 처리 |
-| `press_equal()` | 후위 표기 변환 및 스택 계산 수행 |
-| `to_postfix()` | Shunting Yard 알고리즘 기반 |
-| `evaluate_postfix()` | 스택 기반 수식 계산 (ZeroDivisionError 포함 예외 처리) |
-
+| **GUI 구현** | PyQt6 기반 GUI (`QDialog`, `QLineEdit`, `QPushButton`, `QTimer`) |
+| **입력 처리** | 숫자, 소수점, 연산자, 괄호, ±, 삭제/초기화 등 모든 입력 유효성 처리 |
+| **수식 처리** | 괄호 포함 중위 표현식 → 후위 표현식 변환(Shunting Yard) |
+| **계산 로직** | 스택 기반 후위 표기식 평가, `0으로 나누기` 등 예외 처리 |
+| **상태 관리** | `READY`, `INPUTTING`, `CALCULATED`, `ERROR` 상태 기반 입력 제어 |
+| **오류 대응** | 에러 발생 시 메시지 표시 및 자동 리셋, 빈 괄호 삭제 등 UX 보완 |
+| **모듈 구조** | `model.py`, `view.py`, `controller.py`로 MVC 구조 완비 |
+| **디자인 요소** | Casio 스타일 버튼 스타일시트 (선택적 확장 가능) |
 
 ---
 
-## 🧩 Flow Chart
+## 📌 기능 상세
 
-### main
-![main](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/main.png?raw=true)
+### 🧮 연산 기능
+- `+`, `-`, `*`, `/` 사칙연산 처리
+- 연산자 우선순위 및 괄호 계산 적용
+- 음수 괄호 수식 `-(2+3)` → `-1*(...)` 자동 변환
+- 결과가 정수일 경우 소수점 제거 (`5.0 → 5`)
 
-### input_digit
-![input_digit](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/input_digit.png?raw=true)
+### 🔢 숫자 및 입력 처리
+- 최대 20자리 숫자 제한
+- 소수점 중복 방지, `-0.001` 등 유효 소수 처리
+- `C`: 현재 숫자만 삭제 / `AC`: 전체 초기화
 
-### input_operator
-![input_operator](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/input_operator.png?raw=true)
+### () 괄호 처리
+- 괄호 개수 자동 보정
+- 괄호 뒤 연산자 제한 (`(-3)` OK, `(+3)` NG)
+- `)` 입력 시 괄호 짝 불일치 시 메시지 출력
 
-### input_paren
-![input_paren](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/input_paren.png?raw=true)
+### ± 부호 전환
+- `-12` ↔ `12` 전환 처리
+- `0`은 변환 무시
 
-### press_equal
-![press_equal](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/press_equal.png?raw=true)
+### 오류 및 예외 처리
+- 수식 불완전 시 `Error` 출력
+- `0`으로 나누기 방지
+- 괄호 미완성 시 자동으로 닫는 괄호 삽입
 
-### to_postfix
-![to_postfix](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/to_postfix.png?raw=true)
+---
 
-### evaluate_postfix
-![evalutate_postfix](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/evaluate_postfix.png?raw=true)
+## 🧠 구조 및 로직 흐름 (MVC)
 
-### press_ac / press_c / toggle_sign
-![ac_c_sign](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/ac_c_sign.png?raw=true)
+### 📂 폴더 구조
+```
+qt-calculator/
+│
+├── main.py             # 프로그램 진입점
+├── model.py            # 수식 처리 및 계산 로직
+├── view.py             # PyQt6 기반 UI 로직
+├── controller.py       # 사용자 입력 처리
+├── calculator.ui       # Qt Designer UI 파일
+├── img/                # 스크린샷 / 배너 이미지
+└── flow_chart/         # 기능별 순서도 이미지
+```
 
-### update_display
-![update_lineEdit](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/update_lineEdit.png?raw=true)
-![update_lineEdit_2](https://github.com/jinhyuk2me/qt-calculator/blob/main/flow_chart/update_lineEdit_2.png?raw=true)
+### 🧬 핵심 구조 흐름
+- **Model**: 수식 저장, 후위 변환, 스택 계산, 상태 관리
+- **View**: UI 구성, 버튼/입력/결과 표시, 메시지 출력
+- **Controller**: 입력 핸들러 → Model 호출 → View 갱신
+
+---
+
+## 🧩 주요 로직 순서도
+
+> 📊 전체 순서도는 [`/flow_chart`](./flow_chart) 폴더 참고
+
+| 항목 | 흐름도 링크 |
+|------|-------------|
+| 전체 메인 | ![main](img 링크) |
+| 숫자 입력 | ![digit](img 링크) |
+| 연산자 입력 | ![op](img 링크) |
+| 괄호 입력 | ![paren](img 링크) |
+| 계산 버튼 | ![equal](img 링크) |
+| 후위 변환 | ![postfix](img 링크) |
+| 계산기 | ![eval](img 링크) |
+
+---
+
+## 📸 UI 스크린샷
+
+### 초기 화면
+<img src="https://github.com/jinhyuk2me/qt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
+
+---
+
+## 🧪 테스트 시나리오
+
+| 입력 | 기대 결과 | 설명 |
+|------|-----------|------|
+| `2 + 3` | `5` | 기본 연산 |
+| `4 + 5 * 2` | `14` | 우선순위 |
+| `-(2 + 3)` | `-5` | 음수 괄호 |
+| `3 / 0` | `Error` | 0 나눗셈 |
+| `1 + )` | `닫는 괄호 오류` 메시지 | 괄호 불일치 |
+| `.` 입력 후 다시 `.` | `소수점 중복 오류` 메시지 | UX 보완 |
+| `-` 입력 후 괄호 | `-1 * (` 처리 | 음수 괄호 변환 |
+
+---
+
+## 👨‍💻 제작자
+
+**장진혁 (Jang Jinhyuk)**  
+[GitHub @jinhyuk2me](https://github.com/jinhyuk2me)
