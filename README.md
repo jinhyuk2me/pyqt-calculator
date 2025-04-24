@@ -12,7 +12,7 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ## 👨‍💻 제작자
 
-**장진혁 (Jang Jin-Hyuk)** &nbsp;&nbsp;[GitHub Profile →](https://github.com/jinhyuk2me)
+**장진혁 (Jang Jin-Hyuk)** &nbsp;&nbsp;[GitHub Profile](https://github.com/jinhyuk2me)
 
 ---
 
