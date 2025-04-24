@@ -123,22 +123,8 @@ python main.py
 
 ---
 
-## 🛠 향후 개선 방향
-
-- [ ] 공학용 연산 확장 (`√`, `^`, `sin`, `cos`, `log`)
-- [ ] 계산 히스토리 저장 및 불러오기 기능
-- [ ] 다국어 지원 (i18n, QTranslator)
-- [ ] 유닛 테스트 자동화 (pytest)
-- [ ] 다크모드 / Casio 테마 지원
-
----
-
 ## 📬 문의
 
 > **장진혁 (Jang Jin-Hyuk)**  
-> 📧 Email: jinhyuk2me@gmail.com  
+> 📧 Email: jinhyuk2ya@gmail.com  
 > 🌐 GitHub: [@jinhyuk2me](https://github.com/jinhyuk2me)
-
----
-
-> 이 프로젝트는 3일간 집중적으로 개발되었으며, 상태 기반 수식 파싱 및 스택 계산기를 직접 구현한 고급 PyQt 프로젝트입니다.
