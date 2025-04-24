@@ -51,7 +51,7 @@ QLineEdit#lineEdit {
 QTextBrowser {
     background-color: #A2A289;
     color: #222;
-    font-size: 8pt;
+    font-size: 9pt;
     font-weight: bold;
     font-family: &quot;Noto Sans Math Bold&quot;, monospace;
     padding: 4px;
@@ -667,7 +667,7 @@ QPushButton#pushButton_AC:pressed, QPushButton#pushButton_C:pressed {
    <property name="font">
     <font>
      <family>Noto Sans Math Bold</family>
-     <pointsize>8</pointsize>
+     <pointsize>9</pointsize>
      <weight>75</weight>
      <bold>true</bold>
     </font>
