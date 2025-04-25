@@ -235,12 +235,30 @@ class CalculatorModel:
         elif self.state == CalcState.CALCULATED :
             self.prev_expression.clear()
             self.tokens.clear()
+            if self.current_input:
+                if self.current_input.startswith('-'):
+                    if self.current_input != "-":
+                        self.current_input = self.current_input[1:]
+                        self.state = CalcState.INPUTTING
+                    else :
+                        self.reset()
+                else:
+                    if self.is_float(self.current_input):
+                        self.current_input = "-" + self.current_input
+                        self.state = CalcState.INPUTTING
+                    else:
+                        self.reset()
         elif self.state == CalcState.READY:
             self.current_input = "-"
+            self.state = CalcState.INPUTTING
         elif self.state == CalcState.INPUTTING:
             if self.current_input:
                 if self.current_input.startswith("-"):
-                    self.current_input = self.current_input[1:]
+                    if self.current_input == "-":
+                        self.current_input = "0"
+                        self.state = CalcState.READY          
+                    else:
+                        self.current_input = self.current_input[1:]
                 elif self.current_input == "0":
                     self.current_input = "-"
                 else:
