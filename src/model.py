@@ -121,10 +121,11 @@ class CalculatorModel:
             if self.current_input:
                 self.tokens = [self.current_input, "*"]
                 self.current_input = ""
+                self.prev_expression = []
+                self.state = CalcState.INPUTTING
             # 예외 상황
             else:
-                self.tokens.clear()
-                self.prev_expression.clear()
+                self.reset()
 
         if self.state in (CalcState.READY, CalcState.INPUTTING):
             # 입력이 존재하는 경우
