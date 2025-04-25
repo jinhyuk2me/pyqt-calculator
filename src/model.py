@@ -255,8 +255,11 @@ class CalculatorModel:
             if self.current_input:
                 if self.current_input.startswith("-"):
                     if self.current_input == "-":
-                        self.current_input = "0"
-                        self.state = CalcState.READY          
+                        if self.tokens:
+                            self.current_input = ""
+                        else :
+                            self.current_input = "0"
+                            self.state = CalcState.READY
                     else:
                         self.current_input = self.current_input[1:]
                 elif self.current_input == "0":
