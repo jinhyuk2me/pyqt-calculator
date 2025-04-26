@@ -71,11 +71,8 @@ qt-calculator/
 ```
 
 ### 상태 전이 구조 (CalcState)
-```
-READY → INPUTTING → CALCULATED
-  ↑               ↓
-ERROR ←────────────
-```
+
+![state](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/flow_chart/state.png?raw=true)
 
 ---
 
