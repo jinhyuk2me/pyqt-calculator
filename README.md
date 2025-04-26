@@ -30,11 +30,11 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ---
 
-## 🖼 UI 스크린샷
+## 🖼 GUI 화면 구성
 
-### ✅ 초기 화면
+![display](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0003.jpg?raw=true)
+![button](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0004.jpg?raw=true)
 
-<img src="https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
 
 ---
 
