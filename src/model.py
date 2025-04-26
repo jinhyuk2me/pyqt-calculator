@@ -116,6 +116,7 @@ class CalculatorModel:
 
         if self.state == CalcState.ERROR:
             self.reset()
+
         elif self.state == CalcState.CALCULATED:
             # 결과가 current_input에 쓰여진 경우 '(' 입력 전 '*' 자동 추가
             if self.current_input:
@@ -126,8 +127,11 @@ class CalculatorModel:
             # 예외 상황
             else:
                 self.reset()
+        elif self.state == CalcState.READY :
+            self.tokens.append("(")
+            self.state = CalcState.INPUTTING
 
-        if self.state in (CalcState.READY, CalcState.INPUTTING):
+        elif self.state == CalcState.INPUTTING:
             # 입력이 존재하는 경우
             if self.current_input:
                 # 음수부호 입력만 있을 경우 자동 -1 곱셈 처리
@@ -230,9 +234,11 @@ class CalculatorModel:
     
 
     def toggle_sign(self):
+
         if  self.state == CalcState.ERROR or self.current_input == "Error":
             self.reset()
             return
+        
         elif self.state == CalcState.CALCULATED :
             self.prev_expression.clear()
             self.tokens.clear()
@@ -249,9 +255,11 @@ class CalculatorModel:
                         self.state = CalcState.INPUTTING
                     else:
                         self.reset()
+
         elif self.state == CalcState.READY:
             self.current_input = "-"
             self.state = CalcState.INPUTTING
+            
         elif self.state == CalcState.INPUTTING:
             if self.current_input:
                 if self.current_input.startswith("-"):

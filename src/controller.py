@@ -22,7 +22,6 @@ class CalculatorController:
         print("[버튼] 숫자:", digit)
         self._debug_state()
         self._update_display()
-        self._update_display()
 
 
     def handle_operator(self, op: str):
@@ -34,7 +33,6 @@ class CalculatorController:
 
         print("[버튼] 연산자:", op)
         self._debug_state()
-        self._update_display()
         self._update_display()
 
 
