@@ -89,21 +89,24 @@ qt-calculator/
 ## 🖼 UI 스크린샷
 
 ### ✅ 초기 화면
+
 <img src="https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
 
 ---
 
 ## 🧪 테스트 시나리오
 
-| 입력 | 결과 | 설명 |
-|------|------|------|
-| `2 + 3` | `5` | 기본 연산 |
-| `4 + 5 * 2` | `14` | 연산자 우선순위 |
-| `-(2 + 3)` | `-5` | 음수 괄호 수식 |
-| `3 / 0` | `Error` | 0으로 나누기 |
-| `1 + )` | 메시지 출력 | 괄호 불일치 처리 |
-| `.` 후 `.` | 메시지 출력 | 소수점 중복 방지 |
-| `-` 후 `(` | `-1 * (` 처리 | 음수 괄호 자동 변환 |
+![test1](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0043.jpg?raw=true)
+![test2](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0044.jpg?raw=true)
+![test3](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0045.jpg?raw=true)
+![test4](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0046.jpg?raw=true)
+![test5](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0047.jpg?raw=true)
+![test6](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0048.jpg?raw=true)
+
+---
+
+## 🧪 테스트 결과
+![testresult](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0064.jpg?raw=true)
 
 ---
 
