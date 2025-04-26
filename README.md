@@ -78,15 +78,11 @@ qt-calculator/
 
 ## 🔄 순서도 (Flowcharts)
 
-| 항목 | 순서도 보기 |
-|------|-------------|
-| 전체 흐름 | `/flow_chart/main.png` |
-| 숫자 입력 | `/flow_chart/digit.png` |
-| 연산자 입력 | `/flow_chart/operator.png` |
-| 괄호 입력 | `/flow_chart/paren.png` |
-| 수식 평가 | `/flow_chart/eval.png` |
+### main
+![main](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/flow_chart/main.png?raw=true)
 
-> 📂 `flow_chart/` 폴더 내 PNG 참고
+### handle 함수 예시 (handle_lparen())
+![handle_lparen](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/flow_chart/handle_lparen.png?raw=true)
 
 ---
 
