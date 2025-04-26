@@ -40,6 +40,9 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ## 🔢 기능 세부 설명
 
+![func1](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0014.jpg?raw=true)
+![func2](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0015.jpg?raw=true)
+
 ### ✔ 사칙연산 및 괄호
 - `+`, `-`, `*`, `/` 계산
 - 괄호 중첩/우선순위 정확히 처리
