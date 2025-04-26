@@ -30,6 +30,14 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ---
 
+## 🖼 UI 스크린샷
+
+### ✅ 초기 화면
+
+<img src="https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
+
+---
+
 ## 🔢 기능 세부 설명
 
 ### ✔ 사칙연산 및 괄호
@@ -85,14 +93,6 @@ qt-calculator/
 
 ### handle 함수 예시 (handle_lparen())
 ![handle_lparen](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/flow_chart/handle_lparen.png?raw=true)
-
----
-
-## 🖼 UI 스크린샷
-
-### ✅ 초기 화면
-
-<img src="https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/initial.png?raw=true" width="400px"/>
 
 ---
 
