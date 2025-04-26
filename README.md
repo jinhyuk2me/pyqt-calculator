@@ -58,6 +58,8 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ## 🧠 MVC 아키텍처 구조
 
+![MVC](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0006.jpg?raw=true)
+
 ```text
 qt-calculator/
 ├── main.py             # 진입점
@@ -72,7 +74,7 @@ qt-calculator/
 
 ### 상태 전이 구조 (CalcState)
 
-![state](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/flow_chart/state.png?raw=true)
+![state](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0009.jpg?raw=true)
 
 ---
 
