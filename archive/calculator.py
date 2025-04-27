@@ -529,7 +529,8 @@ class Calculator(QDialog, form_class):
             self.set_state(CalcState.INPUTTING)
             self.update_display()
             return False
-        
+         
+ 
         
     def _handle_operator_after_lparen(self, op):
         if op == "-":
@@ -547,7 +548,8 @@ class Calculator(QDialog, form_class):
             if self.tokens[-1] == "-":
                 self.current_input = "-" if op == "-" else ""
                 self.tokens[-1] = op
-            elif self.tokens[-1] in "+*/":
+            elif self.tokens[-1] in "+*/": 
+ 
                 self.tokens[-1] = op
             else:
                 self.tokens.append(op)
