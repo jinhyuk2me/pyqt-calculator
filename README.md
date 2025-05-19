@@ -32,9 +32,32 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ## 🖼 GUI 화면 구성
 
-![display](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0003.jpg?raw=true)
-![button](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0004.jpg?raw=true)
+### 📷 전체 화면 예시
+![display](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/display.jpg?raw=true)
 
+### 🧾 화면 요소 설명
+
+#### ▸ 상단 / 하단 디스플레이
+- **상단 디스플레이 (`lineEdit_2`)**: 현재 수식 표현 (토큰 기반 수식 표시)
+- **하단 디스플레이 (`lineEdit`)**: 현재 입력 숫자 또는 계산 결과 표시
+
+#### ▸ 버튼 기능 정리
+
+| 버튼 구분 | 항목 | 설명 |
+|-----------|------|------|
+| 숫자 버튼 | `0` ~ `9` | 숫자 입력 |
+| 연산자 버튼 | `+`, `-`, `×`, `÷` | 사칙연산 입력 |
+| 괄호 | `(`, `)` | 괄호 입력 |
+| 계산 | `=` | 수식 평가 후 결과 출력 |
+| 초기화 | `AC` | 전체 입력 초기화 |
+| 삭제 | `C` | 마지막 항목 삭제 |
+| 부호 전환 | `±` | 숫자 부호 전환 (`+ ↔ -`) |
+| 소수점 | `.` | 소수점 입력 (중복 방지 포함) |
+
+#### ▸ 텍스트 메시지 영역
+- 사용자 오류 및 안내 메시지를 일시적으로 표시하는 하단 텍스트 영역  
+  예: `"소수점은 한 번만 입력할 수 있습니다"`  
+  예: `"닫는 괄호가 더 많을 수 없습니다"`
 
 ---
 
