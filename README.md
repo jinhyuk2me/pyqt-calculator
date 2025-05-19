@@ -97,7 +97,28 @@ Shunting Yard 알고리즘과 스택 계산기를 직접 구현하여 **정확�
 
 ## 🧠 MVC 아키텍처 구조
 
-![MVC](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0006.jpg?raw=true)
+### 📌 핵심 개념
+- 전체 프로그램을 **Model**, **View**, **Controller**로 명확히 분리
+- **Model**과 **View**는 서로 직접 접근하지 않으며, **Controller**를 통해 간접 연결됨
+
+### 🔄 흐름 구조
+```
+사용자 입력 (View)
+↓ signal
+Controller (입력 핸들링 및 상태 갱신)
+↓ Model 호출 및 계산 결과 전달
+Model (계산 로직 및 상태 관리)
+↑ 계산 결과 반환
+Controller → View.update_xxx()로 결과 반영
+```
+
+### 📦 각 요소별 역할 정리
+
+| 구성 요소 | 역할 설명 |
+|-----------|-----------|
+| **Controller** | 중심 허브. View와 Model 모두를 알고 있으며, 사용자 입력을 받아 Model을 호출하고 View를 갱신 |
+| **Model** | 계산 로직과 상태 처리를 담당. 직접 UI를 업데이트하지 않음 |
+| **View** | 사용자 인터페이스 구성과 사용자 입력 signal 전달 담당. 자체 로직은 없음 |
 
 ```text
 qt-calculator/
@@ -113,7 +134,22 @@ qt-calculator/
 
 ### 상태 전이 구조 (CalcState)
 
-![state](https://github.com/jinhyuk2me/pyqt-calculator/blob/main/img/slides/PyQt6%20%EA%B8%B0%EB%B0%98%20%EA%B3%84%EC%82%B0%EA%B8%B0%20%EC%8B%9C%EC%8A%A4%ED%85%9C%20_page-0009.jpg?raw=true)
+계산기 내부 상태는 다음 4가지 중 하나로 존재하며, 사용자 행동에 따라 상태 전이가 발생합니다:
+
+| 상태 | 설명 |
+|------|------|
+| `READY` | 초기 상태. 입력이 없는 대기 상태 |
+| `INPUTTING` | 숫자, 연산자, 괄호 등 수식이 입력되고 있는 중 |
+| `CALCULATED` | 계산 완료 후 결과가 출력된 상태 |
+| `ERROR` | 잘못된 수식, 0으로 나누기 등의 오류가 발생한 상태 |
+
+#### 상태 전이 예시
+
+- `READY` → `INPUTTING`: 숫자나 괄호, 연산자 입력 시작
+- `INPUTTING` → `CALCULATED`: `=` 입력 후 결과 계산
+- `INPUTTING` → `ERROR`: 괄호 오류, 수식 오류 등 발생
+- `CALCULATED` → `READY` 또는 `INPUTTING`: 새 수식 입력 또는 연산자 추가
+- `ERROR` → `READY`: `C`, `AC` 또는 새 숫자 입력 시 복구
 
 ---
 
